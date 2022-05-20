@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Table,
   Thead,
@@ -13,12 +13,30 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { saveTable } from '../SaveTable';
 
-const ReceiptTable = ({ data, setData, deleteItem, payees, setPayees }) => {
+const ReceiptTable = ({ data, setData, deleteItem, payees }) => {
+  const [update, setUpdate] = useState(true);
+
   function handleCheckboxOnChange(itemIndex, payeeIndex) {
     let newData = data;
     newData[itemIndex].payees[payeeIndex] =
       !newData[itemIndex].payees[payeeIndex];
     setData(newData);
+    saveTable(newData, payees);
+  }
+  
+  function changeItemName(newName, index) {
+    let newData = data;
+    newData[index].name = newName;
+    setData(data);
+    setUpdate(!update);
+    saveTable(newData, payees);
+  }
+
+  function changeItemPrice(newPrice, index) {
+    let newData = data;
+    newData[index].price = newPrice;
+    setData(newData);
+    setUpdate(!update);
     saveTable(newData, payees);
   }
 
@@ -39,10 +57,10 @@ const ReceiptTable = ({ data, setData, deleteItem, payees, setPayees }) => {
             return (
               <Tr>
                 <Td>
-                  <Input value={item.name} />
+                  <Input value={item.name} onChange={(e) => changeItemName(e.target.value, index)} />
                 </Td>
                 <Td>
-                  <Input value={item.price} />
+                  <Input value={item.price} onChange={(e) => changeItemPrice(e.target.value, index)} />
                 </Td>
                 {item.payees.map((payee, payeeIndex) => {
                   return (

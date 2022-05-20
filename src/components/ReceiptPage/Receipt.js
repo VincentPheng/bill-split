@@ -1,26 +1,14 @@
 import {
-  Box,
   VStack,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Input,
-  Textarea,
-  Flex,
   HStack,
-  Heading,
-  Text
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { saveTable, saveTotal } from '../SaveTable';
 import ReceiptTable from './ReceiptTable';
 import { useNavigate } from 'react-router-dom';
+import { NewPayeeModal, BulkAddModal, StartOverConfirmModal } from './ReceiptModals';
 
 const Receipt = ({ setPayeeTotal }) => {
   let navigate = useNavigate();
@@ -61,7 +49,7 @@ const Receipt = ({ setPayeeTotal }) => {
     });
     data.forEach((item) => {
       let divisor = 0.0;
-      const price = item.price;
+      const price = parseFloat(item.price);
       item.payees.forEach((payee) => {
         if (payee) {
           divisor += 1.0;
@@ -96,7 +84,6 @@ const Receipt = ({ setPayeeTotal }) => {
     itemList.forEach((item, index) => {
       addItem(newData, item, parseFloat(priceList[index]));
     });
-    console.log(newData);
     setData(newData);
     saveTable(newData, payees);
     onBulkAddClose();
@@ -187,94 +174,6 @@ const Receipt = ({ setPayeeTotal }) => {
   );
 };
 
-const NewPayeeModal = ({ isOpen, onClose, addPayee }) => {
-  const [newPayeeName, setNewPayeeName] = useState('');
 
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Enter Payee</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Input
-            placeholder="Name"
-            onChange={(e) => setNewPayeeName(e.target.value)}
-          />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={() => addPayee(newPayeeName)}
-          >
-            Submit
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
-
-const BulkAddModal = ({ isOpen, onClose, bulkAddItem }) => {
-  const [items, setItems] = useState('');
-  const [prices, setPrices] = useState('');
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Enter Items</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <HStack>
-            <Flex flexDir="column">
-              <Text fontWeight="bold">Item Name</Text>
-              <Textarea onChange={(e) => setItems(e.target.value)} />
-            </Flex>
-            <Flex flexDir="column">
-              <Text fontWeight="bold">Item Price</Text>
-              <Textarea onChange={(e) => setPrices(e.target.value)} />
-            </Flex>
-          </HStack>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={() => bulkAddItem(items, prices)}
-          >
-            Submit
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
-
-const StartOverConfirmModal = ({ isOpen, onClose, restart }) => {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Are you sure?</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text>This will delete the entire table and restart everything.</Text>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="red" mr={3} onClick={() => restart()}>
-            Yes
-          </Button>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            No
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
 
 export default Receipt;
