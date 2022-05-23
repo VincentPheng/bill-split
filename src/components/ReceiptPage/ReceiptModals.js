@@ -11,8 +11,7 @@ import {
   Textarea,
   Flex,
   HStack,
-  Text,
-  VStack
+  Text
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 

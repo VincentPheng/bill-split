@@ -14,7 +14,7 @@ function App() {
 
   return (
     <ChakraProvider>
-      <Box>
+      <Box m={5}>
         <Router>
           <Routes>
             <Route
