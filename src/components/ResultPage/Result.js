@@ -8,7 +8,8 @@ import {
   Td,
   TableContainer,
   Box,
-  Button
+  Button,
+  Text
 } from '@chakra-ui/react';
 import {Link} from 'react-router-dom';
 import { ArrowBackIcon } from '@chakra-ui/icons';
@@ -22,6 +23,9 @@ const Result = ({ payeeTotal }) => {
         <ArrowBackIcon />
       </Button>
       </Link>
+      <Text color='red' fontWeight='bold'>
+        Results might differ from exact total by a few cents
+      </Text>
       <TableContainer>
         <Table variant="simple">
           <Thead>

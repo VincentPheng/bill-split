@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { ChakraProvider, Box } from '@chakra-ui/react';
+import { ChakraProvider, Box, Flex } from '@chakra-ui/react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Receipt from './components/ReceiptPage/Receipt';
 import Result from './components/ResultPage/Result';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+import LandingPage from './components/LandingPage/LandingPage';
 
 function App() {
   const [payeeTotal, setPayeeTotal] = useState(() => {
@@ -14,18 +17,24 @@ function App() {
 
   return (
     <ChakraProvider>
-      <Box m={5}>
+      <Box minH="100vh">
         <Router>
-          <Routes>
-            <Route
-              path="/"
-              element={<Receipt setPayeeTotal={setPayeeTotal} />}
-            />
-            <Route
-              path="/results"
-              element={<Result payeeTotal={payeeTotal} />}
-            />
-          </Routes>
+          <Header />
+          <Box mr='10rem' ml='10rem' mb='5rem'>
+            <Routes>
+              <Route path="/" element={<LandingPage />}>
+                <Route
+                  index
+                  element={<Receipt setPayeeTotal={setPayeeTotal} />}
+                />
+                <Route
+                  path="results"
+                  element={<Result payeeTotal={payeeTotal} />}
+                />
+              </Route>
+            </Routes>
+          </Box>
+          <Footer />
         </Router>
       </Box>
     </ChakraProvider>

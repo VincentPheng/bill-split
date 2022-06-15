@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   Thead,
@@ -13,7 +13,13 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons';
 import { saveTable } from '../SaveTable';
 
-const ReceiptTable = ({ data, setData, deleteItem, payees }) => {
+const ReceiptTable = ({
+  data,
+  setData,
+  deleteItem,
+  payees,
+  onRemovePayeeOpen
+}) => {
   const [update, setUpdate] = useState(true);
 
   function handleCheckboxOnChange(itemIndex, payeeIndex) {
@@ -23,7 +29,7 @@ const ReceiptTable = ({ data, setData, deleteItem, payees }) => {
     setData(newData);
     saveTable(newData, payees);
   }
-  
+
   function changeItemName(newName, index) {
     let newData = data;
     newData[index].name = newName;
@@ -48,7 +54,11 @@ const ReceiptTable = ({ data, setData, deleteItem, payees }) => {
             <Th>Name</Th>
             <Th>Price</Th>
             {payees.map((payee) => {
-              return <Th>{payee}</Th>;
+              return (
+                <Th cursor="pointer" onClick={() => onRemovePayeeOpen()}>
+                  {payee}
+                </Th>
+              );
             })}
           </Tr>
         </Thead>
@@ -57,10 +67,16 @@ const ReceiptTable = ({ data, setData, deleteItem, payees }) => {
             return (
               <Tr>
                 <Td>
-                  <Input value={item.name} onChange={(e) => changeItemName(e.target.value, index)} />
+                  <Input
+                    value={item.name}
+                    onChange={(e) => changeItemName(e.target.value, index)}
+                  />
                 </Td>
                 <Td>
-                  <Input value={item.price} onChange={(e) => changeItemPrice(e.target.value, index)} />
+                  <Input
+                    value={item.price}
+                    onChange={(e) => changeItemPrice(e.target.value, index)}
+                  />
                 </Td>
                 {item.payees.map((payee, payeeIndex) => {
                   return (

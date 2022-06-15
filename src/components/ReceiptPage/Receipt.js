@@ -3,12 +3,19 @@ import {
   Button,
   useDisclosure,
   HStack,
+  Flex,
+  Spacer
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { saveTable, saveTotal } from '../SaveTable';
 import ReceiptTable from './ReceiptTable';
 import { useNavigate } from 'react-router-dom';
-import { NewPayeeModal, BulkAddModal, StartOverConfirmModal } from './ReceiptModals';
+import {
+  NewPayeeModal,
+  BulkAddModal,
+  StartOverConfirmModal,
+  RemovePayeeModal
+} from './ReceiptModals';
 
 const Receipt = ({ setPayeeTotal }) => {
   let navigate = useNavigate();
@@ -41,7 +48,11 @@ const Receipt = ({ setPayeeTotal }) => {
     onOpen: onStartOverOpen,
     onClose: onStartOverClose
   } = useDisclosure();
-
+  const {
+    isOpen: isRemovePayeeOpen,
+    onOpen: onRemovePayeeOpen,
+    onClose: onRemovePayeeClose
+  } = useDisclosure();
   function submit() {
     let payeeTotal = {};
     payees.forEach((payee) => {
@@ -55,8 +66,8 @@ const Receipt = ({ setPayeeTotal }) => {
           divisor += 1.0;
         }
       });
-      if(divisor === 0.0) {
-        divisor = 1.0
+      if (divisor === 0.0) {
+        divisor = 1.0;
       }
       item.payees.forEach((payee, index) => {
         if (payee) {
@@ -66,7 +77,7 @@ const Receipt = ({ setPayeeTotal }) => {
     });
     saveTotal(payeeTotal);
     setPayeeTotal(payeeTotal);
-    navigate('/results');
+    navigate('results');
   }
 
   function restart() {
@@ -79,10 +90,8 @@ const Receipt = ({ setPayeeTotal }) => {
   function bulkAddItem(items, prices) {
     let newData = data;
 
-    let itemList = items.split('\n');
-    let priceList = prices.split('\n');
-    itemList.forEach((item, index) => {
-      addItem(newData, item, parseFloat(priceList[index]));
+    items.forEach((item, index) => {
+      addItem(newData, item, parseFloat(prices[index]));
     });
     setData(newData);
     saveTable(newData, payees);
@@ -130,6 +139,8 @@ const Receipt = ({ setPayeeTotal }) => {
     onNewPayeeClose();
   }
 
+  function removePayee() {}
+
   function deleteItem(index) {
     let newData = data.filter((_, i) => i !== index);
     setData(newData);
@@ -151,10 +162,16 @@ const Receipt = ({ setPayeeTotal }) => {
         deleteItem={deleteItem}
         payees={payees}
         setPayees={setPayees}
+        onRemovePayeeOpen={onRemovePayeeOpen}
       />
-      <Button onClick={() => addBlankItem()}>+ Add Item</Button>
-      <Button onClick={onBulkAddOpen}>+ Bulk Add Items and Price</Button>
-      <Button onClick={() => submit()}>Submit Receipt</Button>
+      <Flex w="40rem">
+        <Button onClick={() => addBlankItem()}>+ Add Item</Button>
+        <Spacer />
+        <Button onClick={onBulkAddOpen}>+ Bulk Add Items and Price</Button>
+        <Spacer />
+        <Button onClick={() => submit()}>Submit Receipt</Button>
+      </Flex>
+
       <NewPayeeModal
         isOpen={isNewPayeeOpen}
         onClose={onNewPayeeClose}
@@ -170,10 +187,13 @@ const Receipt = ({ setPayeeTotal }) => {
         onClose={onStartOverClose}
         restart={restart}
       />
+      <RemovePayeeModal
+        isOpen={isRemovePayeeOpen}
+        onClose={onRemovePayeeClose}
+        removePayee={removePayee}
+      />
     </VStack>
   );
 };
-
-
 
 export default Receipt;
